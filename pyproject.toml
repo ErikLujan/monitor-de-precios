@@ -1,0 +1,124 @@
+[project]
+name = "monitor-de-precios"
+version = "0.1.0"
+description = "Monitor de precios para e-commerce/PyMEs con scraping, alertas Telegram y dashboard Streamlit"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27.0",
+    "beautifulsoup4>=4.15.0",
+    "playwright>=1.64.1",
+    "apscheduler>=3.10.4",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.16.2",
+    "pyyaml>=6.0.1",
+    "tenacity>=8.3.0",
+    "loguru>=0.7.2",
+    "typer>=0.12.0",
+    "streamlit>=1.66.1",
+    "rich>=13.7.0",
+    "python-dotenv>=1.2.4",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.17.3",
+    "mypy>=2.4.1",
+    "pip-audit>=2.10.1",
+    "bandit>=1.9.4",
+    "types-pyyaml>=6.0.12.20261103",
+    "pandas-stubs>=3.1.0.261029",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/monitor_de_precios"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.17.3",
+    "mypy>=2.4.1",
+    "pip-audit>=2.10.1",
+    "bandit>=1.9.4",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "T20", # flake8-print
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # function calls in default argument
+]
+per-file-ignores = { "tests/*" = ["S101", "S106", "T201", "ARG001"] }
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+show_error_codes = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pytest",
+    "playwright",
+    "streamlit",
+    "apscheduler.schedulers.background",
+    "apscheduler.triggers.interval",
+    "yaml",
+    "pandas",
+    "streamlit_autorefresh",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]

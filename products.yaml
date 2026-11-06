@@ -1,0 +1,88 @@
+﻿# products.yaml.example
+# Copiá este archivo a products.yaml y configurá los productos a monitorear.
+# Cada producto define qué scrapeear, cada cuánto, y cómo extraer los datos.
+
+products:
+  # Productos reales de prueba (books.toscrape.com - sin login)
+  - id: libro-luz-en-el-atico
+    nombre: "A Light in the Attic"
+    tienda: "Books to Scrape"
+    url: "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+    frecuencia_horas: 24
+    requiere_js: false
+    user_agent: "auto"
+    headers: {}
+    umbral_cambio_porcentaje: 5.0
+    umbral_precio_maximo: null
+    activo: true
+    campos:
+      - nombre: precio
+        tipo: numero
+        selectores:
+          - ".price_color"
+        atributo: null
+        limpiar: true
+      - nombre: titulo
+        tipo: texto
+        selectores:
+          - "h1"
+        atributo: null
+        limpiar: false
+      - nombre: disponible
+        tipo: texto
+        selectores:
+          - ".availability"
+          - ".instock.availability"
+        atributo: null
+        limpiar: false
+
+  - id: libro-tipping-the-velvet
+    nombre: "Tipping the Velvet"
+    tienda: "Books to Scrape"
+    url: "https://books.toscrape.com/catalogue/tipping-the-velvet_999/index.html"
+    frecuencia_horas: 24
+    requiere_js: false
+    user_agent: "auto"
+    headers: {}
+    umbral_cambio_porcentaje: 5.0
+    umbral_precio_maximo: null
+    activo: true
+    campos:
+      - nombre: precio
+        tipo: numero
+        selectores:
+          - ".price_color"
+        atributo: null
+        limpiar: true
+      - nombre: titulo
+        tipo: texto
+        selectores:
+          - "h1"
+        atributo: null
+        limpiar: false
+      - nombre: disponible
+        tipo: texto
+        selectores:
+          - ".availability"
+          - ".instock.availability"
+        atributo: null
+        limpiar: false
+
+# Campos disponibles para cada producto:
+#   id: string único (slug, sin espacios, para BD y logs)
+#   nombre: string, nombre visible en UI y alertas
+#   tienda: string, nombre de la tienda/competencia
+#   url: string, URL completa del producto a monitorear
+#   frecuencia_horas: integer, cada cuántas horas scrapeear (APScheduler interval)
+#   requiere_js: boolean, true = usa Playwright (sitios SPA, contenido dinámico)
+#   user_agent: "auto" (rotativo) o string fijo personalizado
+#   headers: object, headers HTTP extra (ej. {"Accept-Language": "es-AR"})
+#   umbral_cambio_porcentaje: float, % mínimo para alertar (ej. 5.0 = 5%)
+#   umbral_precio_maximo: float o null, alerta si precio <= este valor
+#   activo: boolean, true = incluido en scheduler, false = pausado
+#   campos: lista de campos a extraer
+#     - nombre: string, clave interna (precio, titulo, disponible, etc.)
+#     - tipo: "numero" | "texto"
+#     - selectores: lista de CSS selectors (se prueba en orden hasta encontrar)
+#     - atributo: null (texto visible) o string ("content", "href", "src", etc.)
+#     - limpiar: boolean, solo para tipo="numero": quita todo excepto dígitos y punto decimal
