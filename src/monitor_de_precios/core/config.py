@@ -62,7 +62,6 @@ def load_products(path: Path | str) -> list[ProductConfig]:
     return products
 
 
-# Lazy settings instance - will be initialized on first access
 _settings_instance: Settings | None = None
 
 
@@ -70,5 +69,9 @@ def get_settings() -> Settings:
     """Obtiene la instancia de configuración (inicializada perezosamente)."""
     global _settings_instance
     if _settings_instance is None:
-        _settings_instance = Settings()  # type: ignore[call-arg]
+        import os
+        _settings_instance = Settings(
+            telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", "dummy"),
+            telegram_chat_id=os.getenv("TELEGRAM_CHAT_ID", "dummy"),
+        )
     return _settings_instance

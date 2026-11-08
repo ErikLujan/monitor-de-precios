@@ -31,13 +31,9 @@ def _scrape_job(product: ProductConfig) -> None:
     logger.info(f"[Job] Ejecutando scrape para: {product.nombre}")
 
     try:
-        # 1. Scrapear
         scraped = scrape_product(product)
 
-        # 2. Obtener último precio de BD
         last = get_last_price(scraped.producto, scraped.tienda)
-
-        # 3. Si hay precio anterior, analizar variación
         if last:
             variacion = calcular_variacion(
                 precio_anterior=last["precio"],
@@ -46,7 +42,6 @@ def _scrape_job(product: ProductConfig) -> None:
                 tienda=scraped.tienda,
             )
 
-            # 4. Verificar si es significativo
             if es_cambio_significativo(
                 variacion,
                 umbral_porcentaje=product.umbral_cambio_porcentaje,
@@ -55,7 +50,6 @@ def _scrape_job(product: ProductConfig) -> None:
                 logger.info(f"[Job] Cambio significativo detectado: {variacion.porcentaje:+.2f}%")
                 alerta_precio_cambio(variacion, url=scraped.url)
 
-        # 5. Insertar nuevo precio
         insert_price(scraped)
         logger.info(f"[Job] Precio guardado: ${scraped.precio:,.2f} ARS")
 
@@ -105,7 +99,6 @@ def start_scheduler() -> None:
     settings = get_settings()
     setup_logging(settings.log_level)
 
-    # Cargar productos
     from pathlib import Path
 
     products = load_products(Path("products.yaml"))
@@ -114,17 +107,14 @@ def start_scheduler() -> None:
         logger.warning("No hay productos configurados. Saliendo.")
         return
 
-    # Filtrar activos
     active_products = [p for p in products if p.activo]
     if not active_products:
         logger.warning("No hay productos activos. Saliendo.")
         return
 
-    # Crear y configurar scheduler
     scheduler = create_scheduler()
     add_product_jobs(scheduler, products)
 
-    # Manejo de señales para shutdown graceful
     def shutdown(signum: int, _frame: Any) -> None:
         logger.info(f"Señal {signum} recibida, deteniendo scheduler...")
         scheduler.shutdown(wait=True)
@@ -133,14 +123,15 @@ def start_scheduler() -> None:
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
 
-    # Iniciar
     logger.info("Iniciando scheduler...")
     scheduler.start()
 
-    # Bloquear hasta señal (cross-platform)
     try:
-        signal.pause()  # type: ignore[attr-defined]
+        if hasattr(signal, "pause"):
+            signal.pause()
+        else:
+            while True:
+                time.sleep(1)
     except AttributeError:
-        # Windows no tiene signal.pause()
         while True:
             time.sleep(1)

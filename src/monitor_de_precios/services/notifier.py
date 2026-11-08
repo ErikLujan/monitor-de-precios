@@ -53,7 +53,7 @@ def enviar_webhook(payload: dict[str, Any]) -> bool:
     """
     settings = get_settings()
     if not settings.webhook_url:
-        return True  # Silencioso si no hay webhook configurado
+        return True
 
     try:
         with httpx.Client(timeout=15.0) as client:
