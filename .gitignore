@@ -1,19 +1,26 @@
 ﻿# Python-generated files
 __pycache__/
-*.py[oc]
-build/
+*.py[cod]
+*.so
+*.egg-info/
 dist/
-wheels/
-*.egg-info
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Virtual environments
-.venv
+.venv/
 .env
+.env.*
+*.env
 
 # Project data & logs
 data/
 logs/
-.uv-cache/
+*.db
+*.sqlite
+*.sqlite3
 
 # IDE
 .vscode/
@@ -25,8 +32,21 @@ logs/
 .DS_Store
 Thumbs.db
 
+# OpenCode
 .opencode/
 opencode.json
 AGENTS.md
+
+# Cache
+.uv-cache/
+uv.lock
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+
+products.yaml
 
 FINAL_REPORT.md

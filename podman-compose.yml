@@ -10,8 +10,15 @@ services:
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
+      - ./products.yaml:/app/products.yaml:ro
     restart: unless-stopped
     command: ["python", "-m", "monitor_de_precios.cli.main", "scheduler"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sqlite3; conn=sqlite3.connect('/app/data/precios.db'); conn.execute('SELECT 1'); print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   ui:
     build:
@@ -22,7 +29,14 @@ services:
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
+      - ./products.yaml:/app/products.yaml:ro 
     ports:
       - "8501:8501"
     restart: unless-stopped
     command: ["python", "-m", "monitor_de_precios.cli.main", "serve"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

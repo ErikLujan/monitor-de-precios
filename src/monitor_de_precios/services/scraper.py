@@ -23,14 +23,28 @@ USER_AGENTS = [
 
 
 def _get_user_agent(product: ProductConfig) -> str:
-    """Obtiene el User-Agent a usar."""
+    """Obtiene el User-Agent a usar.
+
+    Args:
+        product: Configuración del producto
+
+    Returns:
+        User-Agent string a utilizar
+    """
     if product.user_agent and product.user_agent != "auto":
         return product.user_agent
     return random.choice(USER_AGENTS)
 
 
 def _build_headers(product: ProductConfig) -> dict[str, str]:
-    """Construye los headers HTTP combinando defaults + custom."""
+    """Construye los headers HTTP combinando defaults + custom.
+
+    Args:
+        product: Configuración del producto
+
+    Returns:
+        Diccionario con headers HTTP
+    """
     headers = {
         "User-Agent": _get_user_agent(product),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -49,7 +63,15 @@ def _build_headers(product: ProductConfig) -> dict[str, str]:
 
 
 def _check_robots_txt(url: str, client: httpx.Client) -> bool:
-    """Verifica robots.txt básico. Retorna True si permitido, False si denegado."""
+    """Verifica robots.txt básico. Retorna True si permitido, False si denegado.
+
+    Args:
+        url: URL a verificar
+        client: Cliente HTTP a utilizar
+
+    Returns:
+        True si permitido, False si denegado
+    """
     try:
         parsed = urlparse(url)
         robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
@@ -76,7 +98,14 @@ def _check_robots_txt(url: str, client: httpx.Client) -> bool:
 
 
 def _clean_price_text(text: str) -> float | None:
-    """Limpia texto de precio y lo convierte a float."""
+    """Limpia texto de precio y lo convierte a float.
+
+    Args:
+        text: Texto crudo del precio
+
+    Returns:
+        Precio como float o None si no se puede parsear
+    """
     cleaned = re.sub(r"[^\d.,]", "", text)
     if cleaned.count(",") > 0 and cleaned.count(".") > 0:
         if cleaned.rfind(",") > cleaned.rfind("."):
@@ -145,7 +174,15 @@ def extract_with_fallback(soup: BeautifulSoup, campo: ProductFieldConfig) -> str
 
 
 def _extract_field(html: str, field: ProductFieldConfig) -> Any:
-    """Extrae un campo del HTML usando selectores CSS."""
+    """Extrae un campo del HTML usando selectores CSS.
+
+    Args:
+        html: HTML crudo a parsear
+        field: Configuración del campo a extraer
+
+    Returns:
+        Valor extraído (str, float o None si no se encuentra)
+    """
     soup = BeautifulSoup(html, "html.parser")
 
     for selector in field.selectores:
@@ -212,7 +249,17 @@ def _scrape_static(product: ProductConfig) -> str:
 
 
 async def _scrape_js(product: ProductConfig) -> str:
-    """Scrapeo con JavaScript usando Playwright."""
+    """Scrapeo con JavaScript usando Playwright.
+
+    Args:
+        product: Configuración del producto a scrapeear
+
+    Returns:
+        HTML renderizado del producto
+
+    Raises:
+        RuntimeError: Si Playwright no está instalado
+    """
     try:
         from playwright.async_api import async_playwright
     except ImportError as e:
