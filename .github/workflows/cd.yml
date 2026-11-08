@@ -1,0 +1,35 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Podman
+        uses: redhat-actions/podman-installer@v1
+
+      - name: Build image
+        run: podman compose build
+
+      - name: Login to GHCR
+        if: github.event_name == 'push'
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image
+        if: github.event_name == 'push'
+        run: |
+          podman tag monitor-de-precios-scraper ghcr.io/${{ github.repository }}/monitor-de-precios:latest
+          podman push ghcr.io/${{ github.repository }}/monitor-de-precios:latest

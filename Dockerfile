@@ -2,49 +2,50 @@
 # Stage 1: Base con dependencias del sistema
 FROM python:3.11.5-slim AS base
 
+WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    curl \
+    ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
-
-# Stage 2: Dependencias Python con uv
 FROM base AS deps
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project --no-dev
 
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --no-dev
 
-# Stage 3: Playwright con Chromium
-FROM deps AS playwright
+FROM base AS playwright
+
+COPY --from=deps /app/.venv /app/.venv
+
+COPY --from=deps /usr/local/bin/uv /usr/local/bin/uv
+
+ENV PATH="/app/.venv/bin:$PATH"
 
 RUN uv run playwright install chromium --with-deps
 
+FROM base AS runtime
 
-# Stage 4: Runtime final
-FROM playwright AS runtime
+COPY --from=playwright /root/.cache/ms-playwright /root/.cache/ms-playwright
 
-# Copiar código fuente
+COPY --from=deps /app/.venv /app/.venv
+
 COPY src/ ./src/
+
 COPY products.yaml.example ./products.yaml.example
 
-# Crear directorios para datos y logs
-RUN mkdir -p /app/data /app/logs
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONPATH=/app/src
 
-# Usuario no-root
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
-USER appuser
+    EXPOSE 8501
 
-EXPOSE 8501
+    USER 1000:1000
 
-# Comando por defecto: scheduler
-CMD ["python", "-m", "monitor_de_precios.cli.main", "scheduler"]
+    CMD ["python", "-m", "monitor_de_precios.cli.main", "scheduler"]
