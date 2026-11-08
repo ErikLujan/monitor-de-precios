@@ -70,6 +70,7 @@ def get_settings() -> Settings:
     global _settings_instance
     if _settings_instance is None:
         import os
+
         _settings_instance = Settings(
             telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", "dummy"),
             telegram_chat_id=os.getenv("TELEGRAM_CHAT_ID", "dummy"),
