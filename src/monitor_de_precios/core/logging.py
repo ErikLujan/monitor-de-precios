@@ -14,14 +14,11 @@ def setup_logging(level: str = "INFO") -> None:
     Args:
         level: Nivel de logging (DEBUG, INFO, WARNING, ERROR)
     """
-    # Remover handlers por defecto
     logger.remove()
 
-    # Asegurar directorio de logs
     log_dir = Path("logs")
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    # Handler stdout (colorizado)
     logger.add(
         sys.stdout,
         level=level,
@@ -29,7 +26,6 @@ def setup_logging(level: str = "INFO") -> None:
         colorize=True,
     )
 
-    # Handler archivo rotativo
     logger.add(
         log_dir / "app.log",
         level=level,

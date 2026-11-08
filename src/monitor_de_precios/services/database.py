@@ -9,7 +9,6 @@ from typing import Any
 
 from monitor_de_precios.models.product import ScrapedPrice
 
-# DB_PATH relativo a la raíz del proyecto (donde se ejecuta uv run)
 DB_PATH = Path("data/precios.db")
 
 
