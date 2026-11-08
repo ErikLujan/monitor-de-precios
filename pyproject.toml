@@ -92,7 +92,6 @@ pretty = true
 
 [[tool.mypy.overrides]]
 module = [
-    "pytest",
     "playwright",
     "streamlit",
     "apscheduler.schedulers.background",
@@ -103,7 +102,6 @@ module = [
 ]
 ignore_missing_imports = true
 
-[tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 python_files = ["test_*.py"]

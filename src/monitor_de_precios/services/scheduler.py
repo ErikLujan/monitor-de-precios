@@ -127,7 +127,11 @@ def start_scheduler() -> None:
     scheduler.start()
 
     try:
-        signal.pause()
+        if hasattr(signal, "pause"):
+            signal.pause()
+        else:
+            while True:
+                time.sleep(1)
     except AttributeError:
         while True:
             time.sleep(1)
