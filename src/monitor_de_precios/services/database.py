@@ -87,7 +87,11 @@ def get_recent_prices(limit: int = 100) -> list[dict[str, Any]]:
     Returns:
         Lista de diccionarios con los campos de la tabla
     """
-    with _get_connection() as conn:
+    init_db()
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    try:
         filas = conn.execute(
             """
             SELECT producto, tienda, precio, moneda, fecha, url
@@ -98,6 +102,8 @@ def get_recent_prices(limit: int = 100) -> list[dict[str, Any]]:
             (limit,),
         ).fetchall()
         return [dict(fila) for fila in filas]
+    finally:
+        conn.close()
 
 
 def get_price_history(product_id: str, days: int = 30) -> list[dict[str, Any]]:
