@@ -109,8 +109,9 @@ def main() -> None:
         _render_price_table(prices)
 
         try:
-            from streamlit_autorefresh import st_autorefresh
+            from importlib import import_module
 
+            st_autorefresh = import_module("streamlit_autorefresh").st_autorefresh
             st_autorefresh(interval=60_000, key="price_refresh")
         except ImportError:
             pass

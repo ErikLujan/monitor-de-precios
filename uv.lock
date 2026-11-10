@@ -1060,7 +1060,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bandit", specifier = "==1.9.4" },
+    { name = "bandit", extras = ["toml"], specifier = "==1.9.4" },
     { name = "mypy", specifier = "==2.4.1" },
     { name = "pandas-stubs", specifier = "==3.1.0.261029" },
     { name = "pip-audit", specifier = "==2.10.1" },

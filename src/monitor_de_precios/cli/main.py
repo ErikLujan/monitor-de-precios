@@ -1,6 +1,7 @@
 """CLI principal con Typer: scrape, serve, init-db, test-notify, list-products, scheduler."""
 
-import subprocess
+import subprocess  # nosec B404
+import sys
 from pathlib import Path
 from typing import Annotated
 
@@ -60,22 +61,25 @@ def scrape() -> None:
 @app.command()
 def serve(
     port: Annotated[int, typer.Option(help="Puerto para Streamlit")] = 8501,
-    host: Annotated[str, typer.Option(help="Host para Streamlit")] = "0.0.0.0",
+    host: Annotated[str, typer.Option(help="Host para Streamlit")] = "0.0.0.0",  # nosec B104
 ) -> None:
     """Inicia la interfaz web Streamlit."""
     settings = get_settings()
     setup_logging(settings.log_level)
     console.print(f"[cyan]Iniciando Streamlit en http://{host}:{port}[/cyan]")
-    subprocess.run(
+    subprocess.run(  # nosec B603
         [
+            sys.executable,
+            "-m",
             "streamlit",
             "run",
-            "src/ui/streamlit_app.py",
+            "src/monitor_de_precios/ui/streamlit_app.py",
             "--server.port",
             str(port),
             "--server.address",
             host,
-        ]
+        ],
+        check=True,
     )
 
 
@@ -162,3 +166,5 @@ def main(
 
 if __name__ == "__main__":
     app()
+
+serve

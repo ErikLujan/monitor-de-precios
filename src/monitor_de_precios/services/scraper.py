@@ -33,7 +33,7 @@ def _get_user_agent(product: ProductConfig) -> str:
     """
     if product.user_agent and product.user_agent != "auto":
         return product.user_agent
-    return random.choice(USER_AGENTS)
+    return random.choice(USER_AGENTS)  # nosec B311
 
 
 def _build_headers(product: ProductConfig) -> dict[str, str]:
