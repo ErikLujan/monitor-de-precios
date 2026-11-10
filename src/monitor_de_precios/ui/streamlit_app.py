@@ -76,6 +76,7 @@ def main() -> None:
     )
 
     from monitor_de_precios.services.database import init_db
+
     init_db()
 
     _check_password()
