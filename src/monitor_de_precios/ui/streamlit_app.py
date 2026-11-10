@@ -75,6 +75,9 @@ def main() -> None:
         initial_sidebar_state="expanded",
     )
 
+    from monitor_de_precios.services.database import init_db
+    init_db()
+
     _check_password()
 
     col1, col2 = st.columns([4, 1])

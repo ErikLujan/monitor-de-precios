@@ -16,6 +16,7 @@ dependencies = [
     "loguru==0.7.3",
     "typer==0.27.3",
     "streamlit==1.66.1",
+    "streamlit-autorefresh==1.0.1",
     "rich==15.0.0",
     "python-dotenv==1.2.4",
 ]
