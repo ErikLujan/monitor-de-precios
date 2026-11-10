@@ -28,7 +28,7 @@ dev = [
     "ruff==0.17.3",
     "mypy==2.4.1",
     "pip-audit==2.10.1",
-    "bandit==1.9.4",
+    "bandit[toml]==1.9.4",
     "types-pyyaml==6.0.12.20261103",
     "pandas-stubs==3.1.0.261029",
 ]
@@ -40,20 +40,11 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/monitor_de_precios"]
 
-[tool.uv]
-dev-dependencies = [
-    "pytest==9.2.0",
-    "pytest-cov==7.1.0",
-    "pytest-asyncio==1.4.1.post1",
-    "ruff==0.17.3",
-    "mypy==2.4.1",
-    "pip-audit==2.10.1",
-    "bandit==1.9.4",
-]
-
 [tool.ruff]
 target-version = "py311"
 line-length = 100
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -123,4 +114,3 @@ exclude_lines = [
 
 [tool.bandit]
 exclude_dirs = ["tests"]
-skips = ["B404", "B104", "B607", "B603", "B311"]
