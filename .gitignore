@@ -22,6 +22,8 @@ logs/
 *.sqlite
 *.sqlite3
 
+products.yaml
+
 # IDE
 .vscode/
 .idea/
@@ -47,6 +49,5 @@ uv.lock
 *.bak
 *~
 
-products.yaml
-
 FINAL_REPORT.md
+UI_DECISIONS.md
