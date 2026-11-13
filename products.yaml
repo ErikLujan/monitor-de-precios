@@ -12,7 +12,7 @@ products:
     requiere_js: false
     user_agent: "auto"
     headers: {}
-    umbral_cambio_porcentaje: 5.0
+    umbral_cambio_porcentaje: 0.1
     umbral_precio_maximo: null
     activo: true
     campos:

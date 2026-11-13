@@ -97,6 +97,22 @@ def _check_robots_txt(url: str, client: httpx.Client) -> bool:
         return True
 
 
+def _detect_currency(raw_text: str) -> str:
+    """Detecta moneda ISO a partir del símbolo monetario en el texto crudo.
+
+    Args:
+        raw_text: Texto crudo del precio (ej. "£51.77", "$100.00", "€45,99")
+
+    Returns:
+        Código ISO de moneda: GBP, EUR, ARS (por defecto para $ y sin símbolo)
+    """
+    if "£" in raw_text:
+        return "GBP"
+    if "€" in raw_text:
+        return "EUR"
+    return "ARS"
+
+
 def _clean_price_text(text: str) -> float | None:
     """Limpia texto de precio y lo convierte a float.
 
@@ -307,11 +323,25 @@ def scrape_product(product: ProductConfig) -> ScrapedPrice:
     soup = BeautifulSoup(html, "html.parser")
 
     extracted = {}
+    moneda_detectada = "ARS"
     for field in product.campos:
         value = extract_with_fallback(soup, field)
         if value is not None:
             extracted[field.nombre] = value
             logger.debug(f"  Campo '{field.nombre}': {value}")
+            # Detectar moneda del precio a partir del texto crudo del HTML
+            if field.nombre == "precio" and moneda_detectada == "ARS":
+                for selector in field.selectores:
+                    elements = soup.select(selector)
+                    if elements:
+                        raw_text = (
+                            elements[0].get(field.atributo)
+                            if field.atributo
+                            else elements[0].get_text(strip=True)
+                        )
+                        if raw_text:
+                            moneda_detectada = _detect_currency(str(raw_text))
+                        break
         else:
             logger.warning(
                 f"  Campo '{field.nombre}' no encontrado con selectores: {field.selectores}"
@@ -331,7 +361,7 @@ def scrape_product(product: ProductConfig) -> ScrapedPrice:
         producto=product.nombre,
         tienda=product.tienda,
         precio=float(precio),
-        moneda="ARS",
+        moneda=moneda_detectada,
         fecha=datetime.now(UTC),
         url=str(product.url),
     )

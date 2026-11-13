@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     webhook_url: str | None = None
     streamlit_password: str | None = None
     log_level: str = "INFO"
+    gbp_to_ars_rate: float = 2047.11
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -74,5 +75,6 @@ def get_settings() -> Settings:
         _settings_instance = Settings(
             telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", "dummy"),
             telegram_chat_id=os.getenv("TELEGRAM_CHAT_ID", "dummy"),
+            gbp_to_ars_rate=float(os.getenv("GBP_TO_ARS_RATE", "2047.11")),
         )
     return _settings_instance
