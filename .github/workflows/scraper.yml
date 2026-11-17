@@ -29,6 +29,17 @@ jobs:
       - name: Install deps
         run: uv sync --frozen
 
+      - name: Create products configuration
+        env:
+          PRODUCTS_YAML: ${{ secrets.PRODUCTS_YAML }}
+        run: |
+          if [ -z "$PRODUCTS_YAML" ]; then
+            echo "::error::PRODUCTS_YAML secret is not configured"
+            exit 1
+          fi
+
+          printf '%s' "$PRODUCTS_YAML" > products.yaml
+
       - name: Run scraper
         env:
             TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
