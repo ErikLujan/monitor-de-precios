@@ -1,11 +1,4 @@
 # Monitor de Precios y Alertas para E-commerce / PyMEs
-
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Screenshot del dashboard Streamlit en desktop mostrando la tabla de precios recientes y el historial por producto.
-
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Screenshot del dashboard en versión mobile (responsive) mostrando la tabla scrollable horizontalmente.
-
 [![CI](https://img.shields.io/github/actions/workflow/status/ErikLujan/monitor-de-precios/ci.yml?label=CI&branch=main)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/ci.yml)
 [![CD](https://img.shields.io/github/actions/workflow/status/ErikLujan/monitor-de-precios/cd.yml?label=CD&branch=main)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/cd.yml)
 [![Daily Scraper](https://img.shields.io/github/actions/workflow/status/ErikLujan/monitor-de-precios/scraper.yml?label=Scraper)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/scraper.yml)
@@ -13,6 +6,24 @@
 [![License](https://img.shields.io/github/license/ErikLujan/monitor-de-precios)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/)
 [![Security: bandit + pip-audit](https://img.shields.io/badge/security-bandit%20%2B%20pip--audit-green)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/ci.yml)
+
+<table>
+<tr>
+<td width="50%" align="center">
+<strong>Dashboard · Desktop</strong><br>
+<img src="https://github.com/user-attachments/assets/6b1e6013-02f6-419a-af76-d42542afef83" width="100%" alt="Dashboard desktop">
+</td>
+<td width="50%" align="center">
+<strong>Historial · Desktop</strong><br>
+<img src="https://github.com/user-attachments/assets/d6fe43c1-ca23-44bd-905e-2ae7778457d3" width="100%" alt="Historial desktop">
+</td>
+</tr>
+</table>
+
+<p align="center">
+<strong>Dashboard · Mobile</strong><br>
+<img src="https://github.com/user-attachments/assets/4d750c75-6cd3-442c-9644-2c00dea281fb" width="300" alt="Dashboard mobile">
+</p>
 
 ## Contenido
 
@@ -65,8 +76,35 @@ Ideal para dueños de PyMEs, e-commerce y revendedores que necesitan tracking de
 
 ## Stack tecnológico
 
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Diagrama de arquitectura del sistema (scraper → scheduler → SQLite → analizador → notificador → UI Streamlit).
+```mermaid
+flowchart LR
+    subgraph Scheduler
+        A[APScheduler\nBackgroundScheduler]
+    end
+    subgraph Scraper
+        B[httpx + BS4]
+        C[Playwright\n(JS opcional)]
+    end
+    subgraph Storage
+        D[(SQLite\nprecios.db)]
+    end
+    subgraph Core
+        E[Analizador\n(variaciones + umbrales)]
+        F[Notificador\n(Telegram + Webhook)]
+    end
+    subgraph UI
+        G[Streamlit\nDashboard]
+    end
+
+    A -->|dispara cada X hs| B
+    A -->|dispara cada X hs| C
+    B -->|HTML crudo| E
+    C -->|HTML renderizado| E
+    E -->|precio + moneda| D
+    E -->|variación significativa| F
+    F -->|alerta| G
+    D -->|historial| G
+```
 
 | Capa | Tecnología |
 |------|------------|
@@ -88,9 +126,6 @@ Ideal para dueños de PyMEs, e-commerce y revendedores que necesitan tracking de
 
 ## Qué incluye vs qué no incluye
 
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Tabla comparativa o infografía resumen de características.
-
 | Incluye ✅ | No incluye ❌ |
 |------------|---------------|
 | Scraping automático programado (APScheduler) | Hosting en la nube (deployás tú en tu servidor o Streamlit Cloud) |
@@ -103,9 +138,6 @@ Ideal para dueños de PyMEs, e-commerce y revendedores que necesitan tracking de
 ---
 
 ## Inversión vs alternativas: ¿cuánto ahorrás?
-
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Gráfico de barras o tabla visual comparando costos anuales.
 
 | Alternativa | Costo estimado (ARS/año) | Con este servicio |
 |-------------|--------------------------|-------------------|
@@ -299,9 +331,6 @@ Uso libre para fines educativos, portafolio y comercial. Template listo para Wor
 ---
 
 ## Alcance del servicio (qué incluye el proyecto)
-
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Checklist visual de entregables.
 
 Cuando contratás este servicio, recibís:
 
