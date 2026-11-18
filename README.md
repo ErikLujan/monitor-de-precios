@@ -79,21 +79,21 @@ Ideal para dueños de PyMEs, e-commerce y revendedores que necesitan tracking de
 ```mermaid
 flowchart LR
     subgraph Scheduler
-        A[APScheduler\nBackgroundScheduler]
+        A["APScheduler\nBackgroundScheduler"]
     end
     subgraph Scraper
-        B[httpx + BS4]
-        C[Playwright\n(JS opcional)]
+        B["httpx + BS4"]
+        C["Playwright\n(JS opcional)"]
     end
     subgraph Storage
-        D[(SQLite\nprecios.db)]
+        D[("SQLite\nprecios.db")]
     end
     subgraph Core
-        E[Analizador\n(variaciones + umbrales)]
-        F[Notificador\n(Telegram + Webhook)]
+        E["Analizador\n(variaciones + umbrales)"]
+        F["Notificador\n(Telegram + Webhook)"]
     end
     subgraph UI
-        G[Streamlit\nDashboard]
+        G["Streamlit\nDashboard"]
     end
 
     A -->|dispara cada X hs| B
