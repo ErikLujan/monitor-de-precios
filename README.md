@@ -76,36 +76,6 @@ Ideal para dueños de PyMEs, e-commerce y revendedores que necesitan tracking de
 
 ## Stack tecnológico
 
-```mermaid
-flowchart LR
-    subgraph Scheduler
-        A["APScheduler\nBackgroundScheduler"]
-    end
-    subgraph Scraper
-        B["httpx + BS4"]
-        C["Playwright\n(JS opcional)"]
-    end
-    subgraph Storage
-        D[("SQLite\nprecios.db")]
-    end
-    subgraph Core
-        E["Analizador\n(variaciones + umbrales)"]
-        F["Notificador\n(Telegram + Webhook)"]
-    end
-    subgraph UI
-        G["Streamlit\nDashboard"]
-    end
-
-    A -->|dispara cada X hs| B
-    A -->|dispara cada X hs| C
-    B -->|HTML crudo| E
-    C -->|HTML renderizado| E
-    E -->|precio + moneda| D
-    E -->|variación significativa| F
-    F -->|alerta| G
-    D -->|historial| G
-```
-
 | Capa | Tecnología |
 |------|------------|
 | Lenguaje | Python 3.11.5 |
@@ -295,8 +265,7 @@ uv run bandit -r src/
 
 ## Arquitectura del sistema
 
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Diagrama de flujo de datos: Scheduler → Scraper (httpx/BS4/Playwright) → SQLite → Analizador (variaciones) → Notificador (Telegram/webhook) → UI Streamlit.
+<img width="1692" height="215" alt="Diagrama" src="https://github.com/user-attachments/assets/ef882ded-18af-43c0-93dc-b91bae13e7a8" />
 
 Flujo de datos:
 1. **Scheduler** (APScheduler) dispara el scraping cada X horas por producto.
