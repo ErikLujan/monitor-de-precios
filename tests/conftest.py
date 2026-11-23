@@ -28,8 +28,13 @@ def settings_mock(monkeypatch):
 
     # Reset the lazy settings instance so it picks up the new env vars
     import monitor_de_precios.core.config as config_mod
-
     config_mod._settings_instance = None
+
+    # Create the mock settings instance
+    mock_settings = Settings()
+
+    monkeypatch.setattr("monitor_de_precios.core.config.get_settings", lambda: mock_settings)
+    monkeypatch.setattr("monitor_de_precios.services.notifier.get_settings", lambda: mock_settings)
 
     return Settings()
 

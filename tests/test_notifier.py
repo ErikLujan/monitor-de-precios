@@ -1,5 +1,6 @@
 """Pruebas para el notificador (Telegram + webhook)."""
 
+from monitor_de_precios.core.config import Settings
 from monitor_de_precios.models.product import PriceVariation
 from monitor_de_precios.services.notifier import (
     alerta_precio_cambio,
@@ -52,12 +53,17 @@ def test_enviar_webhook_exitoso(mock_http, settings_mock):
     mock_http.post.assert_called_once_with("https://webhook.test", json=payload, timeout=15.0)
 
 
-def test_enviar_webhook_sin_url(monkeypatch, settings_mock):
+def test_enviar_webhook_sin_url(monkeypatch):
     """Verifica True silencioso si no hay webhook_url."""
     monkeypatch.delenv("WEBHOOK_URL", raising=False)
-    import monitor_de_precios.core.config as config_mod
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
+    monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
 
+    import monitor_de_precios.core.config as config_mod
     config_mod._settings_instance = None
+
+    monkeypatch.setattr("monitor_de_precios.core.config.get_settings", lambda: Settings())
+    monkeypatch.setattr("monitor_de_precios.services.notifier.get_settings", lambda: Settings())
 
     result = enviar_webhook({"test": "data"})
     assert result is True
