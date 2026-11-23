@@ -70,5 +70,8 @@ def get_settings() -> Settings:
     """Obtiene la instancia de configuración (inicializada perezosamente)."""
     global _settings_instance
     if _settings_instance is None:
-        _settings_instance = Settings()
+        _settings_instance = Settings(
+            telegram_bot_token="dummy",
+            telegram_chat_id="dummy",
+        )
     return _settings_instance
