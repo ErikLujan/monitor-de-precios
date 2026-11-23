@@ -40,6 +40,7 @@ def _scrape_job(product: ProductConfig) -> None:
                 precio_actual=scraped.precio,
                 producto=scraped.producto,
                 tienda=scraped.tienda,
+                moneda=last.get("moneda", "ARS"),
             )
 
             if es_cambio_significativo(

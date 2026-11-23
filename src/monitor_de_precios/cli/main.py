@@ -11,9 +11,13 @@ from rich.table import Table
 
 from monitor_de_precios.core.config import get_settings, load_products
 from monitor_de_precios.core.logging import logger, setup_logging
-from monitor_de_precios.models.product import ProductConfig
+from monitor_de_precios.models.product import PriceVariation, ProductConfig
 from monitor_de_precios.services.database import init_db
-from monitor_de_precios.services.notifier import enviar_alerta_telegram, enviar_webhook
+from monitor_de_precios.services.notifier import (
+    alerta_precio_cambio,
+    enviar_alerta_telegram,
+    enviar_webhook,
+)
 from monitor_de_precios.services.scheduler import start_scheduler
 from monitor_de_precios.services.scraper import scrape_product
 
@@ -106,6 +110,29 @@ def test_notify() -> None:
     console.print("[cyan]Enviando test a webhook...[/cyan]")
     ok_wh = enviar_webhook({"event": "test", "message": "Monitor de precios test"})
     console.print(f"  Webhook: {'[green]OK[/green]' if ok_wh else '[yellow]SKIP/FAIL[/yellow]'}")
+
+
+@app.command("demo-notify")
+def demo_notify() -> None:
+    """Envía una alerta de demostración simulando una caída de precio (~18%) en GBP."""
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    variacion = PriceVariation(
+        producto="A Light in the Attic",
+        tienda="Books to Scrape",
+        precio_anterior=51.77,
+        precio_actual=42.50,
+        diferencia=42.50 - 51.77,
+        porcentaje=round((42.50 - 51.77) / 51.77 * 100, 2),
+        moneda="GBP",
+    )
+
+    url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+
+    console.print(f"[cyan]Enviando demo-notify: {variacion.porcentaje:+.2f}%...[/cyan]")
+    alerta_precio_cambio(variacion, url=url)
+    console.print("[green]Demo-notify enviado[/green]")
 
 
 @app.command("list-products")

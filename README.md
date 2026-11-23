@@ -48,8 +48,20 @@
 
 ## ¿Qué hace este template?
 
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Screenshot del dashboard con una alerta de cambio de precio visible, o screenshot del Telegram recibiendo una notificación.
+<table align="center">
+  <tr>
+    <th>Notificación móvil</th>
+    <th>Mensaje en chat</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/3a6e8de7-c591-46e8-b922-b041b16821ce" width="300" alt="Mobile Notification"/>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/af7d158c-c619-46a1-abf1-8b842f95462d" width="300" alt="Telegram Message"/>
+    </td>
+  </tr>
+</table>
 
 Este **template production-ready** monitoriza precios de la competencia automáticamente, guarda el historial en una base de datos local (SQLite), detecta variaciones significativas y te avisa por **Telegram** o **webhook genérico**. Todo se visualiza en un dashboard **Streamlit** listo para usar.
 
@@ -316,7 +328,7 @@ Cuando contratás este servicio, recibís:
 
 ## Contacto y próximos pasos
 
-<img width="1983" height="793" alt="image" src="https://github.com/user-attachments/assets/8fcd8b41-ba34-45f6-93dd-10d5d92b7bd1" />
+<img width="1983" height="793" alt="image" src="https://github.com/user-attachments/assets/c887e81c-90fd-4ab9-a10d-c57797078d52" />
 
 ¿Te interesa este template para tu negocio o proyecto?
 

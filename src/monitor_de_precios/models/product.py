@@ -71,6 +71,9 @@ class PriceVariation(BaseModel):
     precio_actual: float = Field(..., ge=0.0)
     diferencia: float
     porcentaje: float
+    moneda: str = Field(
+        default="ARS", description="Código de moneda original (GBP, EUR, ARS, etc.)"
+    )
 
     @property
     def es_aumento(self) -> bool:

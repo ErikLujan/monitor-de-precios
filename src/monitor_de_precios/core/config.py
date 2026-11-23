@@ -70,11 +70,5 @@ def get_settings() -> Settings:
     """Obtiene la instancia de configuración (inicializada perezosamente)."""
     global _settings_instance
     if _settings_instance is None:
-        import os
-
-        _settings_instance = Settings(
-            telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", "dummy"),
-            telegram_chat_id=os.getenv("TELEGRAM_CHAT_ID", "dummy"),
-            gbp_to_ars_rate=float(os.getenv("GBP_TO_ARS_RATE", "2047.11")),
-        )
+        _settings_instance = Settings()
     return _settings_instance

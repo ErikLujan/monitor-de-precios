@@ -8,6 +8,7 @@ def calcular_variacion(
     precio_actual: float,
     producto: str = "",
     tienda: str = "",
+    moneda: str = "ARS",
 ) -> PriceVariation:
     """Calcula la diferencia absoluta y porcentual entre dos precios.
 
@@ -16,6 +17,7 @@ def calcular_variacion(
         precio_actual: Precio recién scrapeado
         producto: Nombre del producto (opcional)
         tienda: Nombre de la tienda (opcional)
+        moneda: Código de moneda original (opcional, default ARS)
 
     Returns:
         PriceVariation con los detalles del cambio
@@ -30,6 +32,7 @@ def calcular_variacion(
         precio_actual=precio_actual,
         diferencia=diferencia,
         porcentaje=round(porcentaje, 2),
+        moneda=moneda,
     )
 
 
