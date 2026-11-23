@@ -316,8 +316,7 @@ Cuando contratás este servicio, recibís:
 
 ## Contacto y próximos pasos
 
-[aca-va-la-futura-imagen-o-captura]
-> **Captura sugerida:** Banner o imagen de cierre con tus datos de contacto o un QR al repositorio.
+<img width="1983" height="793" alt="image" src="https://github.com/user-attachments/assets/8fcd8b41-ba34-45f6-93dd-10d5d92b7bd1" />
 
 ¿Te interesa este template para tu negocio o proyecto?
 
