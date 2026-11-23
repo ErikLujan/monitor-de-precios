@@ -53,7 +53,7 @@ def test_enviar_webhook_exitoso(mock_http, settings_mock):
     mock_http.post.assert_called_once_with("https://webhook.test", json=payload, timeout=15.0)
 
 
-def test_enviar_webhook_sin_url(monkeypatch):
+def test_enviar_webhook_sin_url(settings_mock, monkeypatch):
     """Verifica True silencioso si no hay webhook_url."""
     monkeypatch.delenv("WEBHOOK_URL", raising=False)
 
@@ -61,8 +61,18 @@ def test_enviar_webhook_sin_url(monkeypatch):
 
     config_mod._settings_instance = None
 
-    monkeypatch.setattr("monitor_de_precios.core.config.get_settings", lambda: Settings())
-    monkeypatch.setattr("monitor_de_precios.services.notifier.get_settings", lambda: Settings())
+    mock_settings = Settings(
+        telegram_bot_token="test_token",
+        telegram_chat_id="-1001234567890",
+        scrape_interval_hours=24,
+        webhook_url=None,
+        streamlit_password="testpass",
+        log_level="DEBUG",
+        gbp_to_ars_rate=2058.62,
+    )
+
+    monkeypatch.setattr("monitor_de_precios.core.config.get_settings", lambda: mock_settings)
+    monkeypatch.setattr("monitor_de_precios.services.notifier.get_settings", lambda: mock_settings)
 
     result = enviar_webhook({"test": "data"})
     assert result is True
