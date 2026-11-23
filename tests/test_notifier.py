@@ -60,6 +60,7 @@ def test_enviar_webhook_sin_url(monkeypatch):
     monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
 
     import monitor_de_precios.core.config as config_mod
+
     config_mod._settings_instance = None
 
     monkeypatch.setattr("monitor_de_precios.core.config.get_settings", lambda: Settings())
