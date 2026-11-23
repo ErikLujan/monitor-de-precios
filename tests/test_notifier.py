@@ -56,8 +56,6 @@ def test_enviar_webhook_exitoso(mock_http, settings_mock):
 def test_enviar_webhook_sin_url(monkeypatch):
     """Verifica True silencioso si no hay webhook_url."""
     monkeypatch.delenv("WEBHOOK_URL", raising=False)
-    monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
-    monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
 
     import monitor_de_precios.core.config as config_mod
 
