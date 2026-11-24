@@ -1,9 +1,11 @@
-# Monitor de Precios y Alertas para E-commerce / PyMEs
+# Monitor de Precios de la Competencia, con Alertas Automáticas
+
+**Enterate cuando la competencia cambia sus precios, sin revisar páginas a mano.** Un sistema que vigila los productos que le indiques, guarda el historial y te avisa por Telegram apenas hay una variación importante.
+
 [![CI](https://img.shields.io/github/actions/workflow/status/ErikLujan/monitor-de-precios/ci.yml?label=CI&branch=main)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/ci.yml)
 [![CD](https://img.shields.io/github/actions/workflow/status/ErikLujan/monitor-de-precios/cd.yml?label=CD&branch=main)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/cd.yml)
 [![Daily Scraper](https://img.shields.io/github/actions/workflow/status/ErikLujan/monitor-de-precios/scraper.yml?label=Scraper)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/scraper.yml)
 [![Tests: 65 passing](https://img.shields.io/badge/tests-65%20passing-brightgreen)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/ErikLujan/monitor-de-precios)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/)
 [![Security: bandit + pip-audit](https://img.shields.io/badge/security-bandit%20%2B%20pip--audit-green)](https://github.com/ErikLujan/monitor-de-precios/actions/workflows/ci.yml)
 
@@ -25,28 +27,48 @@
 <img src="https://github.com/user-attachments/assets/4d750c75-6cd3-442c-9644-2c00dea281fb" width="300" alt="Dashboard mobile">
 </p>
 
+> **¿Querés algo así para tu negocio?** Contactame por Workana contándome qué productos o tiendas querés seguir y te paso un presupuesto sin cargo. [Ir a la sección de contacto](#contacto-y-próximos-pasos).
+
 ## Contenido
 
-- [¿Qué hace este template?](#-qué-hace-este-template)
-- [¿Para quién es este proyecto?](#-para-quién-es-este-proyecto)
-- [Casos de uso (qué podés monitorear)](#-casos-de-uso-qué-podés-monitorear)
-- [Stack tecnológico](#-stack-tecnológico)
-- [Qué incluye vs qué no incluye](#-qué-incluye-vs-qué-no-incluye)
-- [Inversión vs alternativas: ¿cuánto ahorrás?](#-inversión-vs-alternativas-cuánto-ahorrás)
-- [Instalación rápida (5 minutos)](#-instalación-rápida-5-minutos)
-- [Variables de entorno (`.env`)](#-variables-de-entorno-env)
-- [products.yaml — Qué productos monitorear](#-productsyaml---qué-productos-monitorear)
-- [Comandos CLI disponibles](#-comandos-cli-disponibles)
-- [Deploy con Podman (producción)](#-deploy-con-podman-producción)
-- [Calidad y verificaciones](#-calidad-y-verificaciones)
-- [Arquitectura del sistema](#-arquitectura-del-sistema)
-- [Solución de problemas (FAQ)](#-solución-de-problemas-faq)
-- [Roadmap (próximas mejoras)](#-roadmap-próximas-mejoras)
-- [Licencia](#-licencia)
-- [Alcance del servicio (qué incluye el proyecto)](#-alcance-del-servicio-qué-incluye-el-proyecto)
-- [Contacto y próximos pasos](#-contacto-y-próximos-pasos)
+- [El problema que resuelve](#el-problema-que-resuelve)
+- [Cómo funciona](#cómo-funciona)
+- [Avisos en tu celular](#avisos-en-tu-celular)
+- [Para quién es](#para-quién-es)
+- [Qué podés monitorear](#qué-podés-monitorear)
+- [Qué incluye y qué no](#qué-incluye-y-qué-no)
+- [Qué recibís al contratarlo](#qué-recibís-al-contratarlo)
+- [Inversión vs alternativas](#inversión-vs-alternativas)
+- [Preguntas frecuentes](#preguntas-frecuentes)
+- [Contacto y próximos pasos](#contacto-y-próximos-pasos)
+- [Documentación técnica](#documentación-técnica)
+- [Licencia](#licencia)
 
-## ¿Qué hace este template?
+## El problema que resuelve
+
+Si vendés online o revendés productos, sabés lo que cuesta estar pendiente de los precios de la competencia: abrir páginas una por una, anotar en una planilla, y aun así enterarte tarde de que alguien bajó el precio o se quedó sin stock.
+
+Este sistema hace ese trabajo por vos, todos los días y sin intervención:
+
+- Revisa automáticamente las páginas que le indiques.
+- Guarda el historial de cada producto para que veas cómo evolucionó el precio.
+- Te avisa por **Telegram** (o a otro sistema, por webhook) cuando el cambio supera el porcentaje que definas.
+- Todo se ve en un **dashboard web** simple, también desde el celular.
+
+Además, no hay cuotas mensuales de software: se contrata una sola vez como proyecto.
+
+## Cómo funciona
+
+<img width="1692" height="215" alt="Diagrama" src="https://github.com/user-attachments/assets/ef882ded-18af-43c0-93dc-b91bae13e7a8" />
+
+1. **Programación:** el sistema revisa cada producto con la frecuencia que elijas (por ejemplo, una vez por día).
+2. **Lectura de precios:** entra a la página del producto y extrae precio, título y disponibilidad. También funciona con tiendas que cargan su contenido con JavaScript.
+3. **Historial:** cada lectura queda guardada para ver la evolución en el tiempo.
+4. **Análisis:** compara con la lectura anterior y detecta variaciones significativas según el umbral que definas.
+5. **Aviso:** si hay un cambio relevante, te llega una alerta por Telegram y/o webhook.
+6. **Dashboard:** podés ver precios actuales, historial y gráficos por producto cuando quieras.
+
+## Avisos en tu celular
 
 <table align="center">
   <tr>
@@ -63,30 +85,99 @@
   </tr>
 </table>
 
-Este **template production-ready** monitoriza precios de la competencia automáticamente, guarda el historial en una base de datos local (SQLite), detecta variaciones significativas y te avisa por **Telegram** o **webhook genérico**. Todo se visualiza en un dashboard **Streamlit** listo para usar.
+Las alertas llegan como un mensaje de Telegram: te enterás en el momento, sin tener que abrir el dashboard.
 
-Ideal para dueños de PyMEs, e-commerce y revendedores que necesitan tracking de precios sin pagar suscripciones mensuales caras.
+## Para quién es
 
-### ¿Para quién es este proyecto?
-
-| Audiencia | Qué obtiene |
+| Si sos... | Qué obtenés |
 |-----------|-------------|
-| **Dueño de PyME / e-commerce** | Control de precios de la competencia sin suscripciones mensuales. Alertas automáticas cuando bajan o suben los precios. Dashboard visual para tomar decisiones de compra/venta. |
-| **Recruiter / Tech Lead** | Código limpio, tipado estricto (mypy strict), 65 tests pasando, CI/CD verde en GitHub Actions, arquitectura documentada y seguridad auditada (bandit + pip-audit). |
-| **Desarrollador** | Template listo para extender: agregar tiendas, cambiar frecuencia de scraping, exportar datos, integrar con otros sistemas, desplegar en Podman o Streamlit Cloud. |
+| **Dueño de PyME o e-commerce** | Control de precios de la competencia sin suscripciones mensuales. Alertas automáticas cuando suben o bajan. Un dashboard visual para decidir cuándo ajustar tus precios. |
+| **Revendedor o comerciante** | Sabés cuándo conviene comprar stock o lanzar una promoción, según cómo se mueve el mercado. |
+| **Equipo que ya tiene sistemas propios** | Las alertas pueden enviarse por webhook para integrarse con lo que ya usás. |
 
-### Casos de uso (qué podés monitorear)
+## Qué podés monitorear
 
-| Caso de uso | Qué se rastrea | Valor para tu negocio |
-|-------------|----------------|----------------------|
-| **Precio de producto en tienda online** | Precio, disponibilidad, título, stock | Detectás cuando la competencia baja el precio y ajustás tu margen |
-| **Variación de precio en marketplace** | Historial de precios, alertas por % de cambio | Sabés cuándo comprar stock o cuándo lanzar una promo |
-| **Disponibilidad de stock crítico** | In/out of stock, tiempo de reposición | Evitás quiebres de stock en tus productos estrella |
-| **Monitoreo de insumos / dólar** | Precio de insumos importados, tipo de cambio | Planificás costos y márgenes en productos importados |
+| Caso de uso | Qué se sigue | Valor para tu negocio |
+|-------------|--------------|-----------------------|
+| **Precio de un producto en una tienda online** | Precio, disponibilidad, título, stock | Detectás cuando la competencia baja el precio y ajustás tu margen |
+| **Variación de precio en un marketplace** | Historial de precios, alertas por % de cambio | Sabés cuándo comprar stock o cuándo lanzar una promo |
+| **Disponibilidad de stock crítico** | Con stock / sin stock | Evitás quiebres en tus productos estrella |
+| **Insumos importados y tipo de cambio** | Precio de insumos, cotizaciones | Planificás costos y márgenes en productos importados |
+
+## Qué incluye y qué no
+
+| Incluye ✅ | No incluye ❌ |
+|------------|---------------|
+| Revisión automática y programada de precios | Hosting en la nube (se instala en tu servidor o en Streamlit Cloud) |
+| Reconocimiento de la moneda (pesos, dólares, euros, libras) | Base de datos remota (los datos se guardan en un archivo local) |
+| Alertas por Telegram y webhook | Inicio de sesión corporativo (solo contraseña opcional en el dashboard) |
+| Dashboard con historial y gráficos | API pública para terceros (se usa por dashboard o línea de comandos) |
+| Instalación lista para producción en contenedores | Varios negocios en una misma instalación (una instalación por negocio) |
+| 65 tests automáticos y verificación continua | |
+
+## Qué recibís al contratarlo
+
+- **Instalación y puesta en marcha** en tu servidor, VPS o Streamlit Cloud.
+- **Configuración de tus productos** (URLs, qué dato leer de cada página y umbrales de alerta).
+- **Configuración de las alertas** (bot de Telegram y webhook opcional).
+- **Capacitación básica** de uso del dashboard (30 minutos por videollamada o en video grabado).
+- **1 mes de soporte posterior a la entrega** (ajustes y dudas de uso).
+- **Documentación de la instalación** para tu equipo.
+
+> **No incluye:** hosting o servidor (corre por tu cuenta), dominio propio, certificado SSL (si usás tu propio servidor) ni modificaciones de código a medida (se cotizan aparte).
+
+## Inversión vs alternativas
+
+| Alternativa | Costo estimado (ARS/año) | Con este servicio |
+|-------------|--------------------------|-------------------|
+| Herramienta SaaS de monitoreo (suscripción mensual) | $240.000 – $600.000+ | **Pago único por proyecto** (sin cuotas mensuales) |
+| Desarrollo desde cero (freelance/agencia) | $500.000 – $1.500.000+ | **Mismo modelo (proyecto), pero más rápido y probado** |
+| Seguimiento manual (tu tiempo) | Horas por semana | **Automatizado: 0 tiempo diario** |
+
+> **Modelo de cobro:** un solo pago por proyecto (en ARS), sin suscripciones mensuales. Incluye instalación, configuración de productos, capacitación básica y 1 mes de soporte posterior a la entrega. Los costos de la tabla son estimaciones de referencia.
+
+## Preguntas frecuentes
+
+**¿Necesito saber programar para usarlo?**
+No. Yo hago la instalación y la configuración inicial, y el uso diario es mirar el dashboard y recibir los avisos en Telegram.
+
+**¿Funciona con cualquier tienda?**
+Funciona con la mayoría de las páginas públicas, incluidas las que cargan con JavaScript. Algunas tiendas tienen protecciones especiales; antes de empezar reviso las que te interesan y te confirmo si es viable.
+
+**¿Cada cuánto revisa los precios?**
+Lo definís vos, producto por producto (por ejemplo, cada 24 horas).
+
+**¿Cuánto tarda en estar funcionando?**
+Depende de la cantidad de productos y del lugar donde se instale. Te doy un plazo concreto en el presupuesto.
+
+**¿Puedo agregar o quitar productos después?**
+Sí, y durante el primer mes de soporte te ayudo a hacerlo.
+
+**¿Mis datos quedan en un servicio de terceros?**
+No. El historial se guarda en un archivo en el servidor donde se instala el sistema, que es tuyo.
+
+## Contacto y próximos pasos
+
+<img width="1983" height="793" alt="image" src="https://github.com/user-attachments/assets/c887e81c-90fd-4ab9-a10d-c57797078d52" />
+
+¿Te interesa para tu negocio?
+
+**👉 Solicitá un presupuesto sin cargo:** contactame por Workana con el detalle de qué productos o tiendas querés monitorear y te paso una cotización en ARS (pago único por proyecto, sin cuotas mensuales).
+
+- **Ver el repositorio:** https://github.com/ErikLujan/monitor-de-precios
+- **Demo en vivo:** https://monitor-de-precios.streamlit.app/
 
 ---
 
-## Stack tecnológico
+## Documentación técnica
+
+Esta parte es para desarrolladores o para el equipo técnico que quiera revisar el proyecto en detalle.
+
+### Calidad del código
+
+Tipado estricto (`mypy --strict`), 65 tests automáticos, integración y despliegue continuos en GitHub Actions y auditoría de seguridad (`bandit` + `pip-audit`).
+
+### Stack tecnológico
 
 | Capa | Tecnología |
 |------|------------|
@@ -104,34 +195,17 @@ Ideal para dueños de PyMEs, e-commerce y revendedores que necesitan tracking de
 | Calidad de código | ruff, mypy (strict), pytest, bandit, pip-audit |
 | Contenedor | Podman / Docker |
 
----
+### Flujo de datos
 
-## Qué incluye vs qué no incluye
+1. **Scheduler** (APScheduler) dispara el scraping cada X horas por producto.
+2. **Scraper** (httpx + BS4, o Playwright si requiere JS) extrae precios del HTML.
+3. **Base de datos** (SQLite) almacena el historial de precios.
+4. **Analizador** detecta variaciones significativas (umbral configurable).
+5. **Notificador** envía alerta por Telegram y/o webhook genérico.
+6. **UI** (Streamlit) muestra precios recientes, historial y gráficos por producto.
 
-| Incluye ✅ | No incluye ❌ |
-|------------|---------------|
-| Scraping automático programado (APScheduler) | Hosting en la nube (deployás tú en tu servidor o Streamlit Cloud) |
-| Detección de moneda real (£, $, € → GBP, USD, EUR, ARS) | Base de datos remota (solo SQLite local) |
-| Alertas por Telegram y webhook | Autenticación OAuth/SSO (solo password opcional en UI) |
-| Dashboard Streamlit con historial y gráficos | API REST pública (solo CLI y UI) |
-| Contenedor Podman para producción | Soporte multi-tenant (diseñado para un usuario/negocio) |
-| 65 tests + CI/CD verde | Migraciones de base de datos (SQLite sin Alembic) |
-
----
-
-## Inversión vs alternativas: ¿cuánto ahorrás?
-
-| Alternativa | Costo estimado (ARS/año) | Con este servicio |
-|-------------|--------------------------|-------------------|
-| Herramienta SaaS de monitoreo (suscripción mensual) | $240.000 – $600.000+ | **Pago único por proyecto** (sin cuotas mensuales) |
-| Desarrollo desde cero (freelance/agencia) | $500.000 – $1.500.000+ | **Mismo modelo (proyecto), pero más rápido y probado** |
-| Seguimiento manual (tu tiempo) | Tu tiempo (horas/semana) | **Automatizado: 0 tiempo diario** |
-
-> **Modelo de cobro:** Un solo pago por proyecto (en ARS), sin suscripciones mensuales. Incluye instalación, configuración de productos, capacitación básica y 1 mes de soporte post-entrega.
-
----
-
-## Instalación rápida (5 minutos)
+<details>
+<summary><strong>Instalación rápida (5 minutos)</strong></summary>
 
 ```bash
 # 1. Clonar el repositorio
@@ -160,7 +234,10 @@ uv run python -m monitor_de_precios.cli.main serve
 # o directamente: uv run streamlit run src/monitor_de_precios/ui/streamlit_app.py
 ```
 
-## Variables de entorno (`.env`)
+</details>
+
+<details>
+<summary><strong>Variables de entorno (<code>.env</code>)</strong></summary>
 
 | Variable | Requerida | Descripción | Ejemplo |
 |----------|-----------|-------------|---------|
@@ -174,7 +251,10 @@ uv run python -m monitor_de_precios.cli.main serve
 
 > **No uses comillas en los valores. Nunca commitees `.env`.** Está en `.gitignore`.
 
-## products.yaml — Qué productos monitorear
+</details>
+
+<details>
+<summary><strong>products.yaml: qué productos monitorear</strong></summary>
 
 ```yaml
 products:
@@ -202,9 +282,12 @@ products:
         limpiar: false
 ```
 
-Ver `products.yaml.example` para ejemplos completos con productos reales de prueba (books.toscrape.com).
+Ver `products.yaml.example` para ejemplos completos con productos de prueba (books.toscrape.com).
 
-## Comandos CLI disponibles
+</details>
+
+<details>
+<summary><strong>Comandos CLI disponibles</strong></summary>
 
 ```bash
 # Scraping manual de todos los productos activos
@@ -226,7 +309,10 @@ uv run python -m monitor_de_precios.cli.main serve
 uv run python -m monitor_de_precios.cli.main scheduler
 ```
 
-## Deploy con Podman (producción)
+</details>
+
+<details>
+<summary><strong>Deploy con Podman (producción)</strong></summary>
 
 ```bash
 # Construir imagen
@@ -244,14 +330,17 @@ podman compose down
 ```
 
 Servicios:
-- **scraper**: Ejecuta el scheduler con jobs periódicos por producto.
-- **ui**: Expone Streamlit en el puerto 8501.
+- **scraper**: ejecuta el scheduler con jobs periódicos por producto.
+- **ui**: expone Streamlit en el puerto 8501.
 
 Volúmenes persistidos:
 - `./data:/app/data` → SQLite `precios.db`
 - `./logs:/app/logs` → Logs rotativos
 
-## Calidad y verificaciones
+</details>
+
+<details>
+<summary><strong>Calidad y verificaciones</strong></summary>
 
 ```bash
 # Sync de dependencias congeladas
@@ -275,19 +364,10 @@ uv run pip-audit
 uv run bandit -r src/
 ```
 
-## Arquitectura del sistema
+</details>
 
-<img width="1692" height="215" alt="Diagrama" src="https://github.com/user-attachments/assets/ef882ded-18af-43c0-93dc-b91bae13e7a8" />
-
-Flujo de datos:
-1. **Scheduler** (APScheduler) dispara el scraping cada X horas por producto.
-2. **Scraper** (httpx + BS4, o Playwright si requiere JS) extrae precios del HTML.
-3. **Base de datos** (SQLite) almacena el historial de precios.
-4. **Analizador** detecta variaciones significativas (umbral configurable).
-5. **Notificador** envía alerta por Telegram y/o webhook genérico.
-6. **UI** (Streamlit) muestra precios recientes, historial y gráficos por producto.
-
-## Solución de problemas (FAQ)
+<details>
+<summary><strong>Solución de problemas (FAQ técnico)</strong></summary>
 
 | Problema | Solución probable |
 |----------|-------------------|
@@ -298,41 +378,18 @@ Flujo de datos:
 | Scraper falla en sitio con JS | Poné `requiere_js: true` en `products.yaml` |
 | Moneda muestra ARS en vez de GBP/£ | Los registros viejos tienen ARS hardcodeado. Borrá la BD y volvé a correr `scrape` |
 
-## Roadmap (próximas mejoras)
+</details>
+
+<details>
+<summary><strong>Roadmap (próximas mejoras)</strong></summary>
 
 - [ ] UI rediseñada: mobile-first, accesibilidad WCAG 2.1 AA
 - [ ] Dominio propio + Cloudflare Tunnel para demo profesional
 - [ ] UptimeRobot para keep-alive en Streamlit Cloud
 - [ ] VPS barato (Hetzner) para separación scraper/UI en producción
 
+</details>
+
 ## Licencia
 
-Uso libre para fines educativos, portafolio y comercial. Template listo para Workana.
-
----
-
-## Alcance del servicio (qué incluye el proyecto)
-
-Cuando contratás este servicio, recibís:
-
-- [ ] **Instalación y despliegue** en tu servidor / VPS / Streamlit Cloud
-- [ ] **Configuración de productos** (urls, selectores CSS, umbrales de alerta)
-- [ ] **Configuración de alertas** (Telegram Bot + webhook opcional)
-- [ ] **Capacitación básica** de uso del dashboard (30 min videollamada o video grabado)
-- [ ] **1 mes de soporte post-entrega** (ajustes de selectores, dudas de uso)
-- [ ] **Documentación técnica** de la instalación para tu equipo
-
-> **No incluye:** Hosting/servidor (corre por tu cuenta), dominio propio, certificado SSL (si usás tu servidor), modificaciones de código a medida (se cotizan aparte).
-
----
-
-## Contacto y próximos pasos
-
-<img width="1983" height="793" alt="image" src="https://github.com/user-attachments/assets/c887e81c-90fd-4ab9-a10d-c57797078d52" />
-
-¿Te interesa este template para tu negocio o proyecto?
-
-**👉 Solicitar presupuesto sin cargo:** Contáctame por Workana con el detalle de qué productos querés monitorear y te paso una cotización en ARS (pago único por proyecto, sin cuotas mensuales).
-
-- **Ver el repositorio:** https://github.com/ErikLujan/monitor-de-precios
-- **Clonar y probar:** `git clone https://github.com/ErikLujan/monitor-de-precios.git`
+© 2026 Erik Luján. Código público para que puedas evaluar el proyecto. Para implementarlo en tu negocio o usarlo comercialmente, contactame.
